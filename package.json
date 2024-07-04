@@ -36,6 +36,14 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dr-forget/wcferry-node.git"
+  },
   "dependencies": {
     "@rustup/nng": "^0.1.2",
     "debug": "^4.3.5",
