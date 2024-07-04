@@ -80,7 +80,7 @@ export class Wcferry {
   }
 
   private trapOnExit() {
-    process.on('SIGINT', process.exit());
+    process.on('SIGINT', () => process.exit());
     process.on("exit", () => this.stop());
   }
 

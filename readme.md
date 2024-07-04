@@ -30,6 +30,34 @@ const off = client.on((msg) => {
 });
 ```
 
+### 还提供service模式  （远程调用可用此模式 此模式 与 本地模式互斥）
+注意 本模式下  只注入dll 其他逻辑自行实现  可通过tcp://0.0.0.0:10086 
+
+```javascript
+const { start_service } = require("@zippybee/wechatcore");
+
+start_service()
+
+// 启动成功 即可通过远程调用 wcf service
+
+// 示例代码
+const { Wcferry } = require("@zippybee/wechatcore");
+
+const client = new Wcferry({ port: 10086，host:'上述service ip 即可' });
+
+client.start();
+
+const isLogin = client.isLogin();
+const userinfo = client.getUserInfo();
+
+console.log(isLogin, userinfo);
+
+const off = client.on((msg) => {
+  console.log("收到消息:", msg.content);
+});
+
+```
+
 ### 项目工程
 
 1. **构建 Protobuf 文件**：自动拉取最新的 `.proto` 文件并进行编译。
