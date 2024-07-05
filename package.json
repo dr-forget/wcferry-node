@@ -8,8 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-proto": "node ./bin/build-proto.js",
     "get-wcf": "node ./bin/get-release.js",
-    "dev": "NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript  -w",
-    "build": "NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript ",
+    "dev": "cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript  -w",
+    "build": "cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript ",
     "prepublishOnly": "npm run build"
   },
   "keywords": [],
