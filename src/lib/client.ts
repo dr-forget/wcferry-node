@@ -48,8 +48,8 @@ export class Wcferry {
   private socket: Socket;
   private readonly localMode;
   private wcf_isRun: boolean;
-  private WxInitSDK: (debug: boolean, port: number) => number
-  private WxDestroySDK: () => void
+  private WxInitSDK?: (debug: boolean, port: number) => number
+  private WxDestroySDK?: () => void
   private timerKey: NodeJS.Timeout | null
   private readonly msgEventSub = new EventEmitter();
   private options: Required<WcferryOptions>;
@@ -65,14 +65,16 @@ export class Wcferry {
       recvPyq: !!options?.recvPyq,
     };
 
-    const dll_path = path.join(__dirname, "../wcf-sdk/sdk.dll");
-
-    const wcf_sdk = koffi.load(dll_path);
-    // @ts-ignore
-    this.WxInitSDK = wcf_sdk.func("int WxInitSDK(bool, int)", "stdcall");
-
-    // @ts-ignore
-    this.WxDestroySDK = wcf_sdk.func("void WxDestroySDK()", "stdcall");
+    if (!this.options.host) {
+      const dll_path = path.join(__dirname, "../wcf-sdk/sdk.dll");
+  
+      const wcf_sdk = koffi.load(dll_path);
+      // @ts-ignore
+      this.WxInitSDK = wcf_sdk.func("int WxInitSDK(bool, int)", "stdcall");
+  
+      // @ts-ignore
+      this.WxDestroySDK = wcf_sdk.func("void WxDestroySDK()", "stdcall");
+    }
     ensureDirSync(this.options.cacheDir);
 
     this.msgEventSub.setMaxListeners(0);
@@ -135,7 +137,7 @@ export class Wcferry {
   }
 
   execDLL(verb: "start" | "stop") {
-    if (!this.localMode) {
+    if (!this.localMode || !this.WxInitSDK) {
       return;
     }
     // 初始化
@@ -155,7 +157,7 @@ export class Wcferry {
     }
 
     if (verb == "stop" && this.wcf_isRun) {
-      this.WxDestroySDK();
+      this.WxDestroySDK?.();
       console.log("wcf======>close");
     }
   }
