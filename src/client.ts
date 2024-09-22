@@ -3,12 +3,14 @@ import { wcf } from './proto/wcf';
 import { createTmpDir, ensureDirSync, sleep, uint8Array2str, type ToPlainType } from './utils';
 import { FileRef, FileSavableInterface } from './file-ref';
 import { Message } from './message';
+import { execSync } from 'child_process';
 import * as extrabyte from './proto/extrabyte';
 import * as roomData from './proto/roomdata';
 import koffi from 'koffi';
 import path from 'path';
 import os from 'os';
 import fs from 'fs';
+import { join } from 'path';
 
 export type UserInfo = ToPlainType<wcf.UserInfo>;
 export type Contact = ToPlainType<wcf.RpcContact>;
@@ -741,6 +743,14 @@ export class wcferry {
     });
     const rsp = this.sendCmdMessage(req);
     return rsp.status;
+  }
+
+  // 获取&更新wcf
+  public async getOrupdateWcf() {
+    const wcf_path = this.option.wcf_path;
+    const bat_path = path.join(__dirname, '../bin/get-release.js');
+    const result = execSync(`node ${bat_path} ${wcf_path}`, { encoding: 'utf-8' });
+    console.log(result);
   }
 }
 function toRef(file: string | Buffer | { type: 'Buffer'; data: number[] } | FileSavableInterface): FileSavableInterface {
