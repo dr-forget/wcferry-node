@@ -5,22 +5,28 @@ import { FileRef, FileSavableInterface } from './file-ref';
 import { Message } from './message';
 import * as extrabyte from './proto/extrabyte';
 import * as roomData from './proto/roomdata';
+import koffi from 'koffi';
 import path from 'path';
 import os from 'os';
+import fs from 'fs';
 
 export type UserInfo = ToPlainType<wcf.UserInfo>;
 export type Contact = ToPlainType<wcf.RpcContact>;
 export type DbTable = ToPlainType<wcf.DbTable>;
 export interface wcferryOptions {
-  host: string;
+  host?: string;
   cacheDir?: string;
   recvPyq?: boolean;
+  service?: boolean;
+  wcf_path?: string; //可以指定wcf的路径
 }
 export class wcferry {
   private cmdsocket: SocketWrapper | null;
   private msgsocket: SocketWrapper | null;
   private storedCallback: (message: any) => void;
-  private option: wcferryOptions;
+  private wechatInitSdk?: (debug: boolean, port: number) => number;
+  private wechatDestroySdk?: () => void;
+  private option: Required<wcferryOptions>;
   readonly NotFriend = {
     fmessage: '朋友推荐消息',
     medianote: '语音记事本',
@@ -33,10 +39,23 @@ export class wcferry {
     this.msgsocket = null;
     this.storedCallback = (res) => res;
     this.option = {
-      ...option,
+      host: option.host || '',
+      recvPyq: option.recvPyq || false,
       cacheDir: option.cacheDir || createTmpDir(),
+      service: option.service || false,
+      wcf_path: option.wcf_path || path.join(__dirname, '../wcf-sdk/sdk.dll'),
     };
     ensureDirSync(this.option.cacheDir as string);
+
+    // 初始化sdk dll
+    if (!fs.existsSync(this.option.wcf_path)) {
+      throw new Error('sdk.dll not found please npm run get-wcf');
+    }
+    const wcf_sdk = koffi.load(this.option.wcf_path);
+    // @ts-ignore
+    this.wechatInitSdk = wcf_sdk.func('int WxInitSDK(bool, int)', 'stdcall');
+    // @ts-ignore
+    this.wechatDestroySdk = wcf_sdk.func('void WxDestroySDK()', 'stdcall');
   }
 
   private trapOnExit() {
@@ -48,9 +67,33 @@ export class wcferry {
     this.msgsocket?.close();
     this.cmdsocket = null;
     this.msgsocket = null;
+    this.wechatDestroySdk?.();
+    if (this.option.service) {
+      console.warn('WCF is stop');
+    }
   }
 
+  // 开启service 模式
+  private startService() {
+    const initResult = this.wechatInitSdk?.(false, 10086);
+    if (initResult == 0) {
+      console.log(`WCF IS RUN IN PROT:${10086}`);
+    } else {
+      console.log('wcf=====>faild');
+    }
+  }
   public start() {
+    if (this.option.service) {
+      return this.startService();
+    }
+    if (!this.option.host) {
+      this.startService();
+      this.option.host = '127.0.0.1:10086';
+    }
+    this.connectCmdSocket();
+  }
+
+  private connectCmdSocket() {
     this.cmdsocket = new SocketWrapper();
     this.cmdsocket.connect(ProtocolType.Pair1, `tcp://${this.option.host}`, 5000, 5000);
     console.log(`Connected to CMD server at ${this.option.host}`);

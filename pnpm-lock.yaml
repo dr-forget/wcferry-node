@@ -14,6 +14,9 @@ importers:
       google-protobuf:
         specifier: ^3.21.4
         version: 3.21.4
+      koffi:
+        specifier: ^2.9.0
+        version: 2.9.0
       mime:
         specifier: 3.0.0
         version: 3.0.0
@@ -603,6 +606,9 @@ packages:
 
   jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
+
+  koffi@2.9.0:
+    resolution: {integrity: sha512-KCsuJ2gM58n6bNdR2Z7gqsh/3TchxxQFbVgax2/UvAjRTgwNSYAJDx9E3jrkBP4jEDHWRCfE47Y2OG+/fiSvEw==}
 
   long@5.2.3:
     resolution: {integrity: sha512-lcHwpNoggQTObv5apGNCTdJrO69eHOZMi4BNC+rTLER8iHAqGrUVeLh/irVIM7zTw2bOXA8T6uNPeujwOLg/2Q==}
@@ -1390,6 +1396,8 @@ snapshots:
   jsonfile@4.0.0:
     optionalDependencies:
       graceful-fs: 4.2.11
+
+  koffi@2.9.0: {}
 
   long@5.2.3: {}
 
