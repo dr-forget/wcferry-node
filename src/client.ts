@@ -47,7 +47,6 @@ export class wcferry {
       service: option?.service || false,
       wcf_path: option?.wcf_path || path.join(__dirname, '../wcf-sdk/sdk.dll'),
     };
-    console.log(this.option, 50);
     ensureDirSync(this.option.cacheDir as string);
 
     // 初始化sdk dll
@@ -84,15 +83,20 @@ export class wcferry {
     }
   }
   public start() {
-    if (this.option.service) {
-      return this.startService();
+    try {
+      if (this.option.service) {
+        return this.startService();
+      }
+      if (!this.option.host) {
+        this.startService();
+        this.option.host = '127.0.0.1';
+        console.log('hello', this.option);
+      }
+      this.connectCmdSocket();
+    } catch (e) {
+      console.log(e);
+      this.stop();
     }
-    if (!this.option.host) {
-      this.startService();
-      this.option.host = '127.0.0.1';
-      console.log('hello', this.option);
-    }
-    this.connectCmdSocket();
   }
 
   private connectCmdSocket() {

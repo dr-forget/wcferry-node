@@ -14,7 +14,8 @@
   },
   "files": [
     "dist",
-    "bin"
+    "bin",
+    "wcf-sdk"
   ],
   "keywords": [],
   "author": "",
