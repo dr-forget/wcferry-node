@@ -1,7 +1,2 @@
 node_modules
-package-lock.json
-package.json
-index.js
-clash.js
-geo/*
-.Ds_Store
+dist/
