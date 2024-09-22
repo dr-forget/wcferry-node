@@ -39,7 +39,7 @@ export default [
       copy({
         targets: [
           {
-            src: 'src/wcf-sdk/**/*',
+            src: 'wcf-sdk/**/*',
             dest: 'dist/wcf-sdk',
           },
         ],
