@@ -1,4 +1,4 @@
-# WeChat Core SDK for Node.js
+# WeChat Core SDK for Node.js ![npm version](https://img.shields.io/npm/v/@zippybee/wechatcore.svg)
 
 #### 注意：
 
