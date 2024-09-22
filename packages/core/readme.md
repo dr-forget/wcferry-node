@@ -71,20 +71,6 @@ const off = client.on((msg) => {
 
 ```
 
-
-
-#### CLI  启动service模式
-
-```
-npm i @zippybee/wcf-cli -g
-
-zippy-wcf start -p 10086   //启动wcf服务    -p 运行端口   -d wcf dll 所在目录 默认不用指定
-
-zippy-wcf stop  //关闭wcf服务
-```
-
-
-
 ### 项目工程
 
 1. **构建 Protobuf 文件**：自动拉取最新的 `.proto` 文件并进行编译。

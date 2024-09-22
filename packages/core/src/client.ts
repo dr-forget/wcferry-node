@@ -73,8 +73,11 @@ export class Wcferry {
     this.msgsocket?.close();
     this.cmdsocket = null;
     this.msgsocket = null;
-    this.wechatDestroySdk?.();
     console.warn('WCF is stop');
+  }
+
+  public stopWcf() {
+    this.wechatDestroySdk?.();
   }
 
   // 开启service 模式
