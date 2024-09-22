@@ -1,5 +1,5 @@
 {
-  "name": "@zippybee/wcf",
+  "name": "@zippybee/wechatcore",
   "version": "2.0.2",
   "description": "",
   "main": "dist/index.js",
@@ -24,7 +24,6 @@
     "google-protobuf": "^3.21.4",
     "koffi": "^2.9.0",
     "mime": "3.0.0",
-    "protobufjs": "^7.4.0",
     "tslib": "^2.7.0"
   },
   "devDependencies": {

@@ -47,6 +47,7 @@ export class wcferry {
       service: option?.service || false,
       wcf_path: option?.wcf_path || path.join(__dirname, '../wcf-sdk/sdk.dll'),
     };
+    console.log(this.option, 50);
     ensureDirSync(this.option.cacheDir as string);
 
     // 初始化sdk dll
@@ -70,16 +71,14 @@ export class wcferry {
     this.cmdsocket = null;
     this.msgsocket = null;
     this.wechatDestroySdk?.();
-    if (this.option.service) {
-      console.warn('WCF is stop');
-    }
+    console.warn('WCF is stop');
   }
 
   // 开启service 模式
   private startService() {
-    const initResult = this.wechatInitSdk?.(false, 10086);
+    const initResult = this.wechatInitSdk?.(false, this.option.port);
     if (initResult == 0) {
-      console.log(`WCF IS RUN IN PROT:${10086}`);
+      console.log(`WCF IS RUN IN PROT:${this.option.port}`);
     } else {
       console.log('wcf=====>faild');
     }
@@ -90,7 +89,8 @@ export class wcferry {
     }
     if (!this.option.host) {
       this.startService();
-      this.option.host = '127.0.0.1:10086';
+      this.option.host = '127.0.0.1';
+      console.log('hello', this.option);
     }
     this.connectCmdSocket();
   }
@@ -98,7 +98,7 @@ export class wcferry {
   private connectCmdSocket() {
     this.cmdsocket = new SocketWrapper();
     this.cmdsocket.connect(ProtocolType.Pair1, `tcp://${this.option.host}:${this.option.port}`, 5000, 5000);
-    console.log(`Connected to CMD server at ${this.option.host}`);
+    console.log(`Connected to CMD server at ${this.option.host}:${this.option.port}`);
     this.trapOnExit();
   }
 
