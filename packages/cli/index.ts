@@ -18,6 +18,7 @@ program
       wcf_path: options.dir || '',
     });
     wcferry.start();
+    console.log(chalk.green('WCF is Running on port: ' + options.port));
   });
 
 program
@@ -28,4 +29,5 @@ program
       port: 10086,
     });
     wcferry.stopWcf();
+    console.log(chalk.green('WCF is stoped'));
   });
