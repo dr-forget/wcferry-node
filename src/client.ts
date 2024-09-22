@@ -15,6 +15,7 @@ export type Contact = ToPlainType<wcf.RpcContact>;
 export type DbTable = ToPlainType<wcf.DbTable>;
 export interface wcferryOptions {
   host?: string;
+  port: number;
   cacheDir?: string;
   recvPyq?: boolean;
   service?: boolean;
@@ -39,11 +40,12 @@ export class wcferry {
     this.msgsocket = null;
     this.storedCallback = (res) => res;
     this.option = {
-      host: option.host || '',
-      recvPyq: option.recvPyq || false,
-      cacheDir: option.cacheDir || createTmpDir(),
-      service: option.service || false,
-      wcf_path: option.wcf_path || path.join(__dirname, '../wcf-sdk/sdk.dll'),
+      host: option?.host || '',
+      port: option?.port || 10086,
+      recvPyq: option?.recvPyq || false,
+      cacheDir: option?.cacheDir || createTmpDir(),
+      service: option?.service || false,
+      wcf_path: option?.wcf_path || path.join(__dirname, '../wcf-sdk/sdk.dll'),
     };
     ensureDirSync(this.option.cacheDir as string);
 
@@ -95,16 +97,15 @@ export class wcferry {
 
   private connectCmdSocket() {
     this.cmdsocket = new SocketWrapper();
-    this.cmdsocket.connect(ProtocolType.Pair1, `tcp://${this.option.host}`, 5000, 5000);
+    this.cmdsocket.connect(ProtocolType.Pair1, `tcp://${this.option.host}:${this.option.port}`, 5000, 5000);
     console.log(`Connected to CMD server at ${this.option.host}`);
     this.trapOnExit();
   }
 
   //   创建msgsocket
   private createMsgSocket(callback: (res: any) => void) {
-    const [domain, port] = this.option.host.split(':');
     this.msgsocket = new SocketWrapper();
-    const msgsocket_url = `${domain}:${+port + 1}`;
+    const msgsocket_url = `${this.option.host}:${+this.option.port + 1}`;
     this.msgsocket.connect(ProtocolType.Pair1, `tcp://${msgsocket_url}`, 0, 0);
     console.log(`Connected to Msg server at ${msgsocket_url}`);
     this.msgsocket.recv((err: any, buf: Buffer) => {
