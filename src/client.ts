@@ -23,7 +23,7 @@ export interface wcferryOptions {
   service?: boolean;
   wcf_path?: string; //可以指定wcf的路径
 }
-export class wcferry {
+export class Wcferry {
   private cmdsocket: SocketWrapper | null;
   private msgsocket: SocketWrapper | null;
   private storedCallback: (message: any) => void;
@@ -52,14 +52,16 @@ export class wcferry {
     ensureDirSync(this.option.cacheDir as string);
 
     // 初始化sdk dll
-    if (!fs.existsSync(this.option.wcf_path)) {
-      throw new Error('sdk.dll not found please npm run get-wcf');
+    if (process.platform === 'win32') {
+      if (!fs.existsSync(this.option.wcf_path)) {
+        throw new Error('sdk.dll not found please npm run get-wcf');
+      }
+      const wcf_sdk = koffi.load(this.option.wcf_path);
+      // @ts-ignore
+      this.wechatInitSdk = wcf_sdk.func('int WxInitSDK(bool, int)', 'stdcall');
+      // @ts-ignore
+      this.wechatDestroySdk = wcf_sdk.func('void WxDestroySDK()', 'stdcall');
     }
-    const wcf_sdk = koffi.load(this.option.wcf_path);
-    // @ts-ignore
-    this.wechatInitSdk = wcf_sdk.func('int WxInitSDK(bool, int)', 'stdcall');
-    // @ts-ignore
-    this.wechatDestroySdk = wcf_sdk.func('void WxDestroySDK()', 'stdcall');
   }
 
   private trapOnExit() {

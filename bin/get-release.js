@@ -2,8 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const AdmZip = require('adm-zip');
+const [file_path] = process.argv.slice(2);
 
-const folder = path.join(__dirname, '../wcf-sdk'); // 默认文件夹路径
+const folder = file_path || path.join(__dirname, '../wcf-sdk'); // 默认文件夹路径
 
 // 检查文件夹是否存在，不存在则创建
 const checkFolder = async (folderPath) => {
