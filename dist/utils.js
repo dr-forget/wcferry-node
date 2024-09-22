@@ -1,0 +1,1 @@
+"use strict";var r=require("fs"),e=require("os"),t=require("path");exports.createTmpDir=function(r="wcferry"){return t.join(e.tmpdir(),r)},exports.ensureDirSync=function(e){try{r.mkdirSync(e,{recursive:!0})}catch{}},exports.sleep=function(r=1e3){return new Promise((e=>setTimeout((()=>e()),r)))},exports.uint8Array2str=function(r){return Buffer.from(r).toString()};
