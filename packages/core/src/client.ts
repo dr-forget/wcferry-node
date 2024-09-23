@@ -28,7 +28,7 @@ export class Wcferry {
   private msgsocket: SocketWrapper | null;
   private storedCallback: (message: any) => void;
   private wechatInitSdk?: (debug: boolean, port: number) => number;
-  private wechatDestroySdk?: () => void;
+  private wechatDestroySdk?: () => number;
   private option: Required<wcferryOptions>;
   readonly NotFriend = {
     fmessage: '朋友推荐消息',
@@ -60,7 +60,7 @@ export class Wcferry {
       // @ts-ignore
       this.wechatInitSdk = wcf_sdk.func('int WxInitSDK(bool, int)', 'stdcall');
       // @ts-ignore
-      this.wechatDestroySdk = wcf_sdk.func('void WxDestroySDK()', 'stdcall');
+      this.wechatDestroySdk = wcf_sdk.func('int WxDestroySDK()', 'stdcall');
     }
   }
 
@@ -73,12 +73,14 @@ export class Wcferry {
     this.msgsocket?.close();
     this.cmdsocket = null;
     this.msgsocket = null;
-    this.wechatDestroySdk?.();
+    this.stopWcf?.();
     console.warn('WCF is stop');
   }
 
   public stopWcf() {
-    this.wechatDestroySdk?.();
+    const result = this.wechatDestroySdk?.() || -1;
+    result !== 0 ? console.log('资源释放失败') : console.log('资源回收成功');
+    return result;
   }
 
   // 开启service 模式
@@ -93,6 +95,7 @@ export class Wcferry {
   public start() {
     try {
       if (this.option.service) {
+        this.trapOnExit();
         return this.startService();
       }
       if (!this.option.host) {
