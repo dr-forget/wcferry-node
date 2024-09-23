@@ -73,6 +73,7 @@ export class Wcferry {
     this.msgsocket?.close();
     this.cmdsocket = null;
     this.msgsocket = null;
+    this.wechatDestroySdk?.();
     console.warn('WCF is stop');
   }
 
@@ -84,7 +85,7 @@ export class Wcferry {
   private startService() {
     const initResult = this.wechatInitSdk?.(false, this.option.port);
     if (initResult == 0) {
-      console.log(`WCF IS RUN IN PROT:${this.option.port}`);
+      console.log(`WCF IS INIT SUCCESS`);
     } else {
       console.log('wcf=====>faild');
     }
