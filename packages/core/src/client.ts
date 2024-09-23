@@ -65,7 +65,7 @@ export class Wcferry {
   }
 
   private trapOnExit() {
-    process.on('exit', this.stop);
+    process.on('exit', this.stop.bind(this));
   }
 
   public stop() {
@@ -73,13 +73,14 @@ export class Wcferry {
     this.msgsocket?.close();
     this.cmdsocket = null;
     this.msgsocket = null;
-    this.stopWcf?.();
+    this.stopWcf();
     console.warn('WCF is stop');
   }
 
   public stopWcf() {
-    const result = this.wechatDestroySdk?.() || -1;
-    result !== 0 ? console.log('资源释放失败') : console.log('资源回收成功');
+    const result = this.wechatDestroySdk?.();
+    const res_num = result == 0 ? 0 : -1;
+    res_num !== 0 ? console.log(`资源释放失败:${res_num}`) : console.log('资源回收成功');
     return result;
   }
 
