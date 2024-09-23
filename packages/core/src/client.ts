@@ -58,7 +58,7 @@ export class Wcferry {
     ensureDirSync(this.option.cacheDir as string);
 
     // 初始化sdk dll
-    if (process.platform === 'win32') {
+    if (process.platform === 'win32' && this.option.host) {
       if (!fs.existsSync(this.option.wcf_path)) {
         throw new Error('sdk.dll not found please npm run get-wcf');
       }
@@ -71,9 +71,7 @@ export class Wcferry {
   }
 
   private trapOnExit() {
-    process.on('exit', () => {
-      this.stop();
-    });
+    process.on('exit', this.stop.bind(this));
     process.on('SIGINT', () => {
       this.stop();
       this.is_stop = true;
