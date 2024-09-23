@@ -64,8 +64,8 @@ importers:
   packages/core:
     dependencies:
       '@zippybee/nng':
-        specifier: ^1.1.5
-        version: 1.1.5
+        specifier: ^1.1.8
+        version: 1.1.8
       '@zippybee/wechatcore':
         specifier: workspace:^
         version: 'link:'
@@ -308,8 +308,8 @@ packages:
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
 
-  '@zippybee/nng@1.1.5':
-    resolution: {integrity: sha512-U4YaK8RQarIeTJNDjLUxg50gYjW3oblt4qi/RJ/wQP+5b8W6zoXvxq0e2QrlbVod/kd/N2gvxHGvmd1HhOtyAA==}
+  '@zippybee/nng@1.1.8':
+    resolution: {integrity: sha512-qH3tShU6K7+YLV8sYdrvas9iKwgPc9QXFURbfM4tc/ahr4+moIayxtck+N7WJp7UBf4DnCoMU23+9okUE9lEdQ==}
     engines: {node: '>= 10'}
 
   abbrev@1.1.1:
@@ -1108,9 +1108,7 @@ snapshots:
 
   '@types/resolve@1.20.2': {}
 
-  '@zippybee/nng@1.1.5':
-    dependencies:
-      typescript: 5.6.2
+  '@zippybee/nng@1.1.8': {}
 
   abbrev@1.1.1: {}
 

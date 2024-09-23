@@ -21,6 +21,7 @@ export interface wcferryOptions {
   cacheDir?: string;
   recvPyq?: boolean;
   service?: boolean;
+  debug?: boolean;
   wcf_path?: string; //可以指定wcf的路径
 }
 export class Wcferry {
@@ -37,6 +38,8 @@ export class Wcferry {
     filehelper: '文件传输助手',
     newsapp: '新闻',
   };
+  private islisten: boolean; //是否监听消息会掉
+  private is_stop: boolean;
   constructor(option: wcferryOptions) {
     this.cmdsocket = null;
     this.msgsocket = null;
@@ -45,10 +48,13 @@ export class Wcferry {
       host: option?.host || '',
       port: option?.port || 10086,
       recvPyq: option?.recvPyq || false,
+      debug: option.debug || false,
       cacheDir: option?.cacheDir || createTmpDir(),
       service: option?.service || false,
       wcf_path: option?.wcf_path || path.join(__dirname, '../wcf-sdk/sdk.dll'),
     };
+    this.islisten = false;
+    this.is_stop = false;
     ensureDirSync(this.option.cacheDir as string);
 
     // 初始化sdk dll
@@ -65,16 +71,25 @@ export class Wcferry {
   }
 
   private trapOnExit() {
-    process.on('exit', this.stop.bind(this));
+    process.on('exit', () => {
+      this.stop();
+    });
+    process.on('SIGINT', () => {
+      this.stop();
+      this.is_stop = true;
+      process.exit(0);
+    }); // ctrl+c
   }
 
   public stop() {
-    this.cmdsocket?.close();
-    this.msgsocket?.close();
-    this.cmdsocket = null;
-    this.msgsocket = null;
-    this.stopWcf();
-    console.warn('WCF is stop');
+    if (this?.is_stop) return;
+    if (this.islisten) {
+      this.stopListening?.();
+    }
+    this.cmdsocket?.close?.();
+    if (!this.option?.service) {
+      this.stopWcf();
+    }
   }
 
   public stopWcf() {
@@ -84,9 +99,14 @@ export class Wcferry {
     return result;
   }
 
+  public cliStop() {
+    const result = this.wechatDestroySdk?.();
+    console.log(result, 104);
+  }
+
   // 开启service 模式
   private startService() {
-    const initResult = this.wechatInitSdk?.(false, this.option.port);
+    const initResult = this.wechatInitSdk?.(this.option.debug, this.option.port);
     if (initResult == 0) {
       console.log(`WCF IS INIT SUCCESS`);
     } else {
@@ -96,13 +116,11 @@ export class Wcferry {
   public start() {
     try {
       if (this.option.service) {
-        this.trapOnExit();
         return this.startService();
       }
       if (!this.option.host) {
         this.startService();
         this.option.host = '127.0.0.1';
-        console.log('hello', this.option);
       }
       this.connectCmdSocket();
     } catch (e) {
@@ -124,6 +142,7 @@ export class Wcferry {
     const msgsocket_url = `${this.option.host}:${+this.option.port + 1}`;
     this.msgsocket.connect(ProtocolType.Pair1, `tcp://${msgsocket_url}`, 0, 0);
     console.log(`Connected to Msg server at ${msgsocket_url}`);
+    this.islisten = true;
     this.msgsocket.recv((err: any, buf: Buffer) => {
       if (err) {
         console.log('error while receiving message: %O', err);
@@ -134,7 +153,7 @@ export class Wcferry {
   }
 
   //   开启消息回调消息监听
-  listening(callback: (message: any) => void) {
+  listening(callback: (message: any) => void): () => void {
     // 判断callback是否是函数
     if (typeof callback !== 'function') {
       throw new Error('callback must be a function');
@@ -144,22 +163,26 @@ export class Wcferry {
       flag: this.option.recvPyq,
     });
     const res = this.sendCmdMessage(req);
+    console.log(res.status, 161);
     if (res.status !== 0) {
       throw new Error('enable recv txt failed');
     }
+    this.islisten = true;
     this.storedCallback = callback;
     this.createMsgSocket(callback);
+    return () => {
+      process.exit(0);
+    };
   }
 
   //   停止消息回调监听
   stopListening() {
-    if (!this.msgsocket) return;
+    if (!this.listening) return;
     const req = new wcf.Request({
       func: wcf.Functions.FUNC_DISABLE_RECV_TXT,
     });
     const res = this.sendCmdMessage(req);
-    this.msgsocket.close();
-    this.msgsocket = null;
+    this?.msgsocket?.close();
     return res.status;
   }
 

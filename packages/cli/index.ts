@@ -3,7 +3,7 @@ import { Command } from 'commander';
 import * as pkg from './package.json';
 import { Wcferry } from '@zippybee/wechatcore';
 const program = new Command();
-
+let wcferryInstance: any = null; // 用于存储 Wcferry 实例
 program.version(pkg.version, '-v --version').usage('<command> [options]');
 
 program
@@ -12,24 +12,18 @@ program
   .option('-p', '--port <port>', 'wcf is running on port')
   .option('-d', '--dir <dir>', 'wcf is running on dir')
   .action((options) => {
-    const wcferry = new Wcferry({
+    if (wcferryInstance) {
+      console.log(chalk.yellow('WCF service is already running.'));
+      return;
+    }
+
+    wcferryInstance = new Wcferry({
       service: true,
       port: options.port,
       wcf_path: options.dir || '',
     });
-    wcferry.start();
-    console.log(chalk.green('WCF is Running on port: ' + options.port || 10086));
-  });
-
-program
-  .command('stop')
-  .description('stop of wcf')
-  .action(() => {
-    const wcferry = new Wcferry({
-      port: 10086,
-    });
-    wcferry.stopWcf();
-    console.log(chalk.green('WCF is stoped'));
+    wcferryInstance.start();
+    console.log(chalk.green(`WCF is Running on port: ${options.port || 10086}`));
   });
 
 program.parse(process.argv);
