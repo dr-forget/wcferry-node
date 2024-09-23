@@ -4,7 +4,7 @@ import * as pkg from './package.json';
 import { Wcferry } from '@zippybee/wechatcore';
 const program = new Command();
 
-program.version(pkg.version, '-V --version').usage('<command> [options]');
+program.version(pkg.version, '-v --version').usage('<command> [options]');
 
 program
   .command('start')
@@ -31,3 +31,5 @@ program
     wcferry.stopWcf();
     console.log(chalk.green('WCF is stoped'));
   });
+
+program.parse(process.argv);
