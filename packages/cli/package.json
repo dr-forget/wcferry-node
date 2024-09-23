@@ -1,6 +1,6 @@
 {
   "name": "@zippybee/wcf-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "bin": {
     "zippy-wcf": "./dist/index.js"
@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "@zippybee/wechatcore": "workspace:^",
-    "chalk": "^5.3.0",
+    "chalk": "^4.1.2",
     "commander": "^12.1.0"
   }
 }
