@@ -1,0 +1,19 @@
+syntax = "proto3";
+package com.iamteer.wcf;
+
+message Extra {
+    enum PropertyKey {
+        Field_0 = 0;
+        Sign = 2;
+        Thumb = 3;
+        Extra = 4;
+        Xml = 7;
+    }
+
+    message Property {
+        PropertyKey type = 1;
+        string value = 2;
+    }
+
+    repeated Property properties = 3;
+}

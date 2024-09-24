@@ -3,33 +3,25 @@ import { wcf } from './proto/wcf';
 import { createTmpDir, ensureDirSync, sleep, uint8Array2str, type ToPlainType } from './utils';
 import { FileRef, FileSavableInterface } from './file-ref';
 import { Message } from './message';
-import { execSync } from 'child_process';
 import * as extrabyte from './proto/extrabyte';
 import * as roomData from './proto/roomdata';
-import koffi from 'koffi';
 import path from 'path';
 import os from 'os';
-import fs from 'fs';
 
 export type UserInfo = ToPlainType<wcf.UserInfo>;
 export type Contact = ToPlainType<wcf.RpcContact>;
 export type DbTable = ToPlainType<wcf.DbTable>;
 export interface wcferryOptions {
-  host?: string;
+  host: string;
   port: number;
   cacheDir?: string;
   recvPyq?: boolean;
-  service?: boolean;
-  debug?: boolean;
-  wcf_path?: string; //可以指定wcf的路径
 }
 export class Wcferry {
   private cmdsocket: SocketWrapper | null;
   private msgsocket: SocketWrapper | null;
   private storedCallback: (message: any) => void;
-  private wechatInitSdk?: (debug: boolean, port: number) => number;
-  private wechatDestroySdk?: () => number;
-  private option: Required<wcferryOptions>;
+  private option: wcferryOptions;
   readonly NotFriend = {
     fmessage: '朋友推荐消息',
     medianote: '语音记事本',
@@ -37,36 +29,19 @@ export class Wcferry {
     filehelper: '文件传输助手',
     newsapp: '新闻',
   };
-  private islisten: boolean; //是否监听消息会掉
+  private islisten: boolean;
   private is_stop: boolean;
   constructor(option: wcferryOptions) {
     this.cmdsocket = null;
     this.msgsocket = null;
-    this.storedCallback = (res) => res;
-    this.option = {
-      host: option?.host || '',
-      port: option?.port || 10086,
-      recvPyq: option?.recvPyq || false,
-      debug: option.debug || false,
-      cacheDir: option?.cacheDir || createTmpDir(),
-      service: option?.service || false,
-      wcf_path: option?.wcf_path || path.join(__dirname, '../wcf-sdk/sdk.dll'),
-    };
     this.islisten = false;
     this.is_stop = false;
+    this.storedCallback = (res) => res;
+    this.option = {
+      ...option,
+      cacheDir: option.cacheDir || createTmpDir(),
+    };
     ensureDirSync(this.option.cacheDir as string);
-
-    // 初始化sdk dll
-    if (process.platform === 'win32' && this.option.host) {
-      if (!fs.existsSync(this.option.wcf_path)) {
-        throw new Error('sdk.dll not found please npm run get-wcf');
-      }
-      const wcf_sdk = koffi.load(this.option.wcf_path);
-      // @ts-ignore
-      this.wechatInitSdk = wcf_sdk.func('int WxInitSDK(bool, int)', 'stdcall');
-      // @ts-ignore
-      this.wechatDestroySdk = wcf_sdk.func('int WxDestroySDK()', 'stdcall');
-    }
   }
 
   private trapOnExit() {
@@ -83,53 +58,13 @@ export class Wcferry {
     if (this.islisten) {
       this.stopListening?.();
     }
-    this.cmdsocket?.close?.();
-    if (!this.option?.service) {
-      this.stopWcf();
-    }
+    this.cmdsocket?.close();
   }
 
-  public stopWcf() {
-    const result = this.wechatDestroySdk?.();
-    const res_num = result == 0 ? 0 : -1;
-    res_num !== 0 ? console.log(`资源释放失败:${res_num}`) : console.log('资源回收成功');
-    return result;
-  }
-
-  public cliStop() {
-    const result = this.wechatDestroySdk?.();
-    console.log(result, 104);
-  }
-
-  // 开启service 模式
-  private startService() {
-    const initResult = this.wechatInitSdk?.(this.option.debug, this.option.port);
-    if (initResult == 0) {
-      console.log(`WCF IS INIT SUCCESS`);
-    } else {
-      console.log('wcf=====>faild');
-    }
-  }
   public start() {
-    try {
-      if (this.option.service) {
-        return this.startService();
-      }
-      if (!this.option.host) {
-        this.startService();
-        this.option.host = '127.0.0.1';
-      }
-      this.connectCmdSocket();
-    } catch (e) {
-      console.log(e);
-      this.stop();
-    }
-  }
-
-  private connectCmdSocket() {
     this.cmdsocket = new SocketWrapper();
     this.cmdsocket.connect(ProtocolType.Pair1, `tcp://${this.option.host}:${this.option.port}`, 5000, 5000);
-    console.log(`Connected to CMD server at ${this.option.host}:${this.option.port}`);
+    console.log(`Connected to CMD server at ${this.option.host}`);
     this.trapOnExit();
   }
 
@@ -149,7 +84,7 @@ export class Wcferry {
   }
 
   //   开启消息回调消息监听
-  listening(callback: (message: any) => void): () => void {
+  listening(callback: (message: any) => void) {
     // 判断callback是否是函数
     if (typeof callback !== 'function') {
       throw new Error('callback must be a function');
@@ -159,16 +94,12 @@ export class Wcferry {
       flag: this.option.recvPyq,
     });
     const res = this.sendCmdMessage(req);
-    console.log(res.status, 161);
     if (res.status !== 0) {
       throw new Error('enable recv txt failed');
     }
     this.islisten = true;
     this.storedCallback = callback;
     this.createMsgSocket(callback);
-    return () => {
-      process.exit(0);
-    };
   }
 
   //   停止消息回调监听
@@ -178,7 +109,7 @@ export class Wcferry {
       func: wcf.Functions.FUNC_DISABLE_RECV_TXT,
     });
     const res = this.sendCmdMessage(req);
-    this?.msgsocket?.close();
+    this.msgsocket?.close();
     return res.status;
   }
 
@@ -772,14 +703,6 @@ export class Wcferry {
     });
     const rsp = this.sendCmdMessage(req);
     return rsp.status;
-  }
-
-  // 获取&更新wcf
-  public async getOrupdateWcf() {
-    const wcf_path = this.option.wcf_path;
-    const bat_path = path.join(__dirname, '../bin/get-release.js');
-    const result = execSync(`node ${bat_path} ${wcf_path}`, { encoding: 'utf-8' });
-    console.log(result);
   }
 }
 function toRef(file: string | Buffer | { type: 'Buffer'; data: number[] } | FileSavableInterface): FileSavableInterface {

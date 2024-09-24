@@ -64,8 +64,8 @@ importers:
   packages/core:
     dependencies:
       '@zippybee/nng':
-        specifier: ^1.1.8
-        version: 1.1.8
+        specifier: ^1.1.9
+        version: 1.1.9
       '@zippybee/wechatcore':
         specifier: workspace:^
         version: 'link:'
@@ -94,6 +94,22 @@ importers:
       protoc-gen-ts:
         specifier: ^0.8.7
         version: 0.8.7
+
+  packages/v1-core:
+    dependencies:
+      '@zippybee/nng':
+        specifier: ^1.1.9
+        version: 1.1.9
+      google-protobuf:
+        specifier: ^3.21.4
+        version: 3.21.4
+      mime:
+        specifier: ^3.0.0
+        version: 3.0.0
+    devDependencies:
+      '@types/mime':
+        specifier: 3.0.0
+        version: 3.0.0
 
 packages:
 
@@ -296,6 +312,9 @@ packages:
   '@types/glob@7.2.0':
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
 
+  '@types/mime@3.0.0':
+    resolution: {integrity: sha512-fccbsHKqFDXClBZTDLA43zl0+TbxyIwyzIzwwhvoJvhNjOErCdeX2xJbURimv2EbSVUGav001PaCJg4mZxMl4w==}
+
   '@types/mime@3.0.4':
     resolution: {integrity: sha512-iJt33IQnVRkqeqC7PzBHPTC6fDlRNRW8vjrgqtScAhrmMwe8c4Eo7+fUGTa+XdWrpEgpyKWMYmi2dIwMAYRzPw==}
 
@@ -308,8 +327,8 @@ packages:
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
 
-  '@zippybee/nng@1.1.8':
-    resolution: {integrity: sha512-qH3tShU6K7+YLV8sYdrvas9iKwgPc9QXFURbfM4tc/ahr4+moIayxtck+N7WJp7UBf4DnCoMU23+9okUE9lEdQ==}
+  '@zippybee/nng@1.1.9':
+    resolution: {integrity: sha512-YGomxMOsOuOZi8uEvbYjBlVcGYgaCrwKfADZ5vUIZKvSgfSvmawX7S9jcVAvjO0v++raiAXvaMcbeqkAHfQ/0w==}
     engines: {node: '>= 10'}
 
   abbrev@1.1.1:
@@ -1098,6 +1117,8 @@ snapshots:
       '@types/minimatch': 5.1.2
       '@types/node': 22.5.5
 
+  '@types/mime@3.0.0': {}
+
   '@types/mime@3.0.4': {}
 
   '@types/minimatch@5.1.2': {}
@@ -1108,7 +1129,7 @@ snapshots:
 
   '@types/resolve@1.20.2': {}
 
-  '@zippybee/nng@1.1.8': {}
+  '@zippybee/nng@1.1.9': {}
 
   abbrev@1.1.1: {}
 

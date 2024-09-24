@@ -1,36 +1,23 @@
 {
-  "name": "@zippybee/wechatcore",
-  "version": "2.1.8",
+  "name": "@zippybee/wcf-v1",
+  "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "index.js",
   "scripts": {
-    "build-proto": "node ./bin/build-proto.js",
-    "get-wcf": "node ./bin/get-release.js",
+    "build-proto": "node ../core/bin/build-proto.js",
     "dev": "cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript  -w",
     "build": "cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript ",
-    "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "files": [
-    "dist",
-    "bin",
-    "wcf-sdk"
-  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@zippybee/nng": "^1.1.9",
     "google-protobuf": "^3.21.4",
-    "koffi": "^2.9.0",
-    "mime": "3.0.0"
+    "mime": "^3.0.0"
   },
   "devDependencies": {
-    "@types/mime": "3",
-    "adm-zip": "^0.5.16",
-    "axios": "^1.7.7",
-    "grpc-tools": "^1.12.4",
-    "protoc-gen-ts": "^0.8.7"
+    "@types/mime": "3.0.0"
   }
 }

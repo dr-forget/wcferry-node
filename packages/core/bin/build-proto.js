@@ -3,13 +3,13 @@ const fs = require('fs');
 const { execSync } = require('child_process');
 const https = require('https');
 const [version] = process.argv.splice(2);
-const PROTO_DIR = path.join(__dirname, '../proto');
+const PROTO_DIR = path.join(process.cwd(), './proto');
 
 const win32 = process.platform === 'win32' ? '.CMD' : '';
-const PROTO_GENERATED = path.join(__dirname, '../src/proto');
+const PROTO_GENERATED = path.join(process.cwd(), './src/proto');
 const PROTO_LINKS = [
-  `https://mirror.ghproxy.com/https://raw.githubusercontent.com/lich0821/WeChatFerry/${version || 'master'}/WeChatFerry/rpc/proto/wcf.proto`,
-  `https://mirror.ghproxy.com/https://raw.githubusercontent.com/lich0821/WeChatFerry/${version || 'master'}/clients/python/roomdata.proto`,
+  `https://gh-proxy.com/https://raw.githubusercontent.com/lich0821/WeChatFerry/${version || 'master'}/WeChatFerry/rpc/proto/wcf.proto`,
+  `https://gh-proxy.com/https://raw.githubusercontent.com/lich0821/WeChatFerry/${version || 'master'}/clients/python/roomdata.proto`,
 ];
 
 // Function to ensure directory exists
@@ -32,6 +32,7 @@ async function getPbs() {
       const filePath = path.join(PROTO_DIR, filename);
 
       const content = processProtoContent(response);
+
       // Save the downloaded file
       fs.writeFileSync(filePath, content);
 
