@@ -1,6 +1,6 @@
 {
-  "name": "@zippybee/wcf-v1",
-  "version": "1.0.0",
+  "name": "@zippybee/wechatcore-v1",
+  "version": "1.0.11",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,6 +9,9 @@
     "build": "cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
