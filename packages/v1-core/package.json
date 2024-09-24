@@ -1,8 +1,9 @@
 {
   "name": "@zippybee/wechatcore-v1",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "build-proto": "node ../core/bin/build-proto.js",
     "dev": "cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript  -w",
