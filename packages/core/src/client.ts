@@ -51,6 +51,7 @@ export class Wcferry {
       debug: option.debug || false,
       cacheDir: option?.cacheDir || createTmpDir(),
       service: option?.service || false,
+      autoClose: option?.autoClose || false,
       wcf_path: option?.wcf_path || path.join(__dirname, '../wcf-sdk/sdk.dll'),
     };
     this.islisten = false;
