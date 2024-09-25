@@ -16,6 +16,7 @@ export interface wcferryOptions {
   port: number;
   cacheDir?: string;
   recvPyq?: boolean;
+  autoClose?: boolean;
 }
 export class Wcferry {
   private cmdsocket: SocketWrapper | null;
@@ -45,7 +46,9 @@ export class Wcferry {
   }
 
   private trapOnExit() {
-    process.on('exit', this.stop.bind(this));
+    if (this.option?.autoClose) {
+      process.on('exit', this.stop.bind(this));
+    }
   }
 
   public stop() {
