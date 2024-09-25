@@ -23,5 +23,12 @@
   },
   "devDependencies": {
     "@types/mime": "3.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/dr-forget/wcferry-node/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dr-forget/wcferry-node/tree/main/packages/v1-core"
   }
 }

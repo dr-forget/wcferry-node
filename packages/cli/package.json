@@ -20,5 +20,12 @@
     "@zippybee/wechatcore": "workspace:^",
     "chalk": "^4.1.2",
     "commander": "^12.1.0"
+  },
+  "bugs": {
+    "url": "https://github.com/dr-forget/wcferry-node/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dr-forget/wcferry-node/tree/main/packages/cli"
   }
 }
