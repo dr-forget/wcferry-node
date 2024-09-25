@@ -66,9 +66,6 @@ importers:
       '@zippybee/nng':
         specifier: ^1.1.9
         version: 1.1.9
-      '@zippybee/wechatcore':
-        specifier: workspace:^
-        version: 'link:'
       google-protobuf:
         specifier: ^3.21.4
         version: 3.21.4
@@ -98,8 +95,8 @@ importers:
   packages/v1-core:
     dependencies:
       '@zippybee/nng':
-        specifier: ^1.1.9
-        version: 1.1.9
+        specifier: ^1.1.10
+        version: 1.1.10
       google-protobuf:
         specifier: ^3.21.4
         version: 3.21.4
@@ -326,6 +323,9 @@ packages:
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
+
+  '@zippybee/nng@1.1.10':
+    resolution: {integrity: sha512-ztI6hLqtMOIdoMGFTc8uLmmUdHOUmA9loSzBqc9xZeq5vib5CRXGbW/1ysLTv+Sh5eAblFCVeYL+azLVSvozNg==}
 
   '@zippybee/nng@1.1.9':
     resolution: {integrity: sha512-YGomxMOsOuOZi8uEvbYjBlVcGYgaCrwKfADZ5vUIZKvSgfSvmawX7S9jcVAvjO0v++raiAXvaMcbeqkAHfQ/0w==}
@@ -1128,6 +1128,8 @@ snapshots:
       undici-types: 6.19.8
 
   '@types/resolve@1.20.2': {}
+
+  '@zippybee/nng@1.1.10': {}
 
   '@zippybee/nng@1.1.9': {}
 

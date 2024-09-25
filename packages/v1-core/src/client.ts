@@ -46,19 +46,20 @@ export class Wcferry {
 
   private trapOnExit() {
     process.on('exit', this.stop.bind(this));
-    process.on('SIGINT', () => {
-      this.stop();
-      this.is_stop = true;
-      process.exit(0);
-    }); // ctrl+c
   }
 
   public stop() {
     if (this?.is_stop) return;
-    if (this.islisten) {
-      this.stopListening?.();
+    if (this?.islisten) {
+      this?.stopListening?.();
     }
-    this.cmdsocket?.close();
+    const result = this?.cmdsocket?.close() || '{}';
+    const res = JSON.parse(result);
+    if (res.code == 0) {
+      console.log(`Cmd Socket Close Success on: ${res.url}`);
+    } else {
+      console.log(res.message);
+    }
   }
 
   public start() {
@@ -84,7 +85,7 @@ export class Wcferry {
   }
 
   //   开启消息回调消息监听
-  listening(callback: (message: any) => void) {
+  listening(callback: (message: any) => void): () => void {
     // 判断callback是否是函数
     if (typeof callback !== 'function') {
       throw new Error('callback must be a function');
@@ -100,6 +101,7 @@ export class Wcferry {
     this.islisten = true;
     this.storedCallback = callback;
     this.createMsgSocket(callback);
+    return this.stop.bind(this);
   }
 
   //   停止消息回调监听
@@ -109,7 +111,13 @@ export class Wcferry {
       func: wcf.Functions.FUNC_DISABLE_RECV_TXT,
     });
     const res = this.sendCmdMessage(req);
-    this.msgsocket?.close();
+    const result = this.msgsocket?.close() || '{}';
+    const close_Result = JSON.parse(result);
+    if (close_Result.code == 0) {
+      console.log(`Msg Socket Close Success on: ${close_Result.url}`);
+    } else {
+      console.log(close_Result.message);
+    }
     return res.status;
   }
 

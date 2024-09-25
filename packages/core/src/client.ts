@@ -71,11 +71,6 @@ export class Wcferry {
 
   private trapOnExit() {
     process.on('exit', this.stop.bind(this));
-    process.on('SIGINT', () => {
-      this.stop();
-      this.is_stop = true;
-      process.exit(0);
-    }); // ctrl+c
   }
 
   public stop() {
@@ -83,7 +78,13 @@ export class Wcferry {
     if (this.islisten) {
       this.stopListening?.();
     }
-    this.cmdsocket?.close?.();
+    const result = this?.cmdsocket?.close() || '{}';
+    const res = JSON.parse(result);
+    if (res.code == 0) {
+      console.log(`Cmd Socket Close Success on: ${res.url}`);
+    } else {
+      console.log(res.message);
+    }
     if (!this.option?.service) {
       this.stopWcf();
     }
@@ -159,16 +160,13 @@ export class Wcferry {
       flag: this.option.recvPyq,
     });
     const res = this.sendCmdMessage(req);
-    console.log(res.status, 161);
     if (res.status !== 0) {
       throw new Error('enable recv txt failed');
     }
     this.islisten = true;
     this.storedCallback = callback;
     this.createMsgSocket(callback);
-    return () => {
-      process.exit(0);
-    };
+    return this.stop;
   }
 
   //   停止消息回调监听
@@ -178,7 +176,13 @@ export class Wcferry {
       func: wcf.Functions.FUNC_DISABLE_RECV_TXT,
     });
     const res = this.sendCmdMessage(req);
-    this?.msgsocket?.close();
+    const result = this.msgsocket?.close() || '{}';
+    const close_Result = JSON.parse(result);
+    if (close_Result.code == 0) {
+      console.log(`Msg Socket Close Success on: ${close_Result.url}`);
+    } else {
+      console.log(close_Result.message);
+    }
     return res.status;
   }
 
@@ -195,7 +199,7 @@ export class Wcferry {
   //   设置接收朋友圈消息
   public setRecvPyq(flag: boolean) {
     if (this.option.recvPyq === flag) return;
-    if (!this.msgsocket) return '未开启监听';
+    if (!this.islisten) return '未开启消息监听';
     this.option.recvPyq = flag;
     this.stopListening();
     this.listening(this.storedCallback);

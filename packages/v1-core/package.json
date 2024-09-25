@@ -1,6 +1,6 @@
 {
   "name": "@zippybee/wechatcore-v1",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -17,7 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@zippybee/nng": "^1.1.9",
+    "@zippybee/nng": "^1.1.10",
     "google-protobuf": "^3.21.4",
     "mime": "^3.0.0"
   },
