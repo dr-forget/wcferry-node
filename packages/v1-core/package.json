@@ -8,6 +8,7 @@
     "build-proto": "node ../core/bin/build-proto.js",
     "dev": "cross-env NODE_ENV=development rollup -c rollup.config.ts --configPlugin typescript  -w",
     "build": "cross-env NODE_ENV=production rollup -c rollup.config.ts --configPlugin typescript ",
+    "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "files": [

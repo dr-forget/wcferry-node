@@ -22,6 +22,7 @@ export interface wcferryOptions {
   service?: boolean;
   debug?: boolean;
   wcf_path?: string; //可以指定wcf的路径
+  autoClose?: boolean;
 }
 export class Wcferry {
   private cmdsocket: SocketWrapper | null;
@@ -70,7 +71,9 @@ export class Wcferry {
   }
 
   private trapOnExit() {
-    process.on('exit', this.stop.bind(this));
+    if (this.option?.autoClose) {
+      process.on('exit', this.stop.bind(this));
+    }
   }
 
   public stop() {
