@@ -1,15 +1,16 @@
-import os from 'os';
 import { Socket, SocketOptions } from '@zippybee/nng';
-import * as cp from 'child_process';
-import debug from 'debug';
 import { wcf } from './proto/wcf';
-import * as rd from './proto/roomdata';
-import * as eb from './proto/extrabyte';
 import { EventEmitter } from 'events';
 import { createTmpDir, ensureDirSync, sleep, uint8Array2str, type ToPlainType } from './utils';
 import { FileRef, FileSavableInterface } from './file-ref';
 import { Message } from './message';
+import * as rd from './proto/roomdata';
+import * as eb from './proto/extrabyte';
+import debug from 'debug';
+import lz4 from 'lz4';
 import path from 'path';
+import fs from 'fs';
+import os from 'os';
 export type UserInfo = ToPlainType<wcf.UserInfo>;
 export type Contact = ToPlainType<wcf.RpcContact>;
 export type DbTable = ToPlainType<wcf.DbTable>;
@@ -779,6 +780,44 @@ export class Wcferry {
     }
     const rsp = wcf.Response.deserialize(buf);
     this.msgEventSub.emit('wxmsg', new Message(rsp.wxmsg));
+  }
+
+  //  构造xml数据
+  private struct_xml_data(xml: string, wx_id: string) {
+    const msgs = this.dbSqlQuery('MSG0.db', `select * from MSG where Type ='49' LIMIT 1`);
+    if (!msgs.length) return console.log('请先发送一条卡片消息 type:49');
+    const xml_info = this.lz4_compress(xml).toString('hex');
+    const MsgSvrID = `10${Date.now()}`;
+    const sql = `UPDATE MSG SET MsgSvrID = ${MsgSvrID},CompressContent = x'${xml_info}', BytesExtra=x''  WHERE localId = ${msgs[0].localId}`;
+    this.dbSqlQuery('MSG0.db', sql);
+    return this.forwardMsg(MsgSvrID, wx_id);
+  }
+  // lz4 算法压缩
+  private lz4_compress(str: string): Buffer {
+    // 将输入字符串转换为 Buffer
+    const input = Buffer.from(str);
+    const output = Buffer.alloc(lz4.encodeBound(input.length));
+    const compressedSize = lz4.encodeBlock(input, output);
+    const resultBuffer = Buffer.alloc(compressedSize);
+    output.copy(resultBuffer, 0, 0, compressedSize); // 复制压缩后的数据
+
+    return resultBuffer; // 返回压缩后的 Buffer
+  }
+  /**
+   * 发送xml数据
+   * @param content xml文件path 或xml字符串
+   * @returns 1 为成功，其他失败
+   */
+  public send_xml_message(content: string, wx_id: string) {
+    const is_xml = typeof content === 'string' && content.trim().startsWith('<');
+    if (is_xml) {
+      return this.struct_xml_data(content, wx_id);
+    }
+    if (fs.existsSync(content)) {
+      const xml_info = fs.readFileSync(content, 'utf-8');
+      return this.struct_xml_data(xml_info, wx_id);
+    }
+    console.log('xml or xml_path is not empty');
   }
 
   /**

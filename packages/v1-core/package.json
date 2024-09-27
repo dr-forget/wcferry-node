@@ -1,6 +1,6 @@
 {
   "name": "@zippybee/wechatcore-v1",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -21,10 +21,12 @@
     "@zippybee/nng": "^1.1.15",
     "debug": "^4.3.7",
     "google-protobuf": "^3.21.4",
+    "lz4": "^0.6.5",
     "mime": "^3.0.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",
+    "@types/lz4": "^0.6.4",
     "@types/mime": "3.0.0"
   },
   "bugs": {
