@@ -16,7 +16,6 @@ export interface wcferryOptions {
   port: number;
   cacheDir?: string;
   recvPyq?: boolean;
-  autoClose?: boolean;
 }
 export class Wcferry {
   private cmdsocket: SocketWrapper | null;
@@ -46,29 +45,23 @@ export class Wcferry {
   }
 
   private trapOnExit() {
-    if (this.option?.autoClose) {
-      process.on('exit', this.stop.bind(this));
-    }
+    process.on('exit', () => {
+      this.stop();
+    });
   }
 
   public stop() {
     if (this?.is_stop) return;
+    this.is_stop = true;
     if (this?.islisten) {
       this?.stopListening?.();
     }
-    const result = this?.cmdsocket?.close() || '{}';
-    const res = JSON.parse(result);
-    if (res.code == 0) {
-      console.log(`Cmd Socket Close Success on: ${res.url}`);
-    } else {
-      console.log(res.message);
-    }
+    this?.cmdsocket?.close() || '{}';
   }
 
   public start() {
     this.cmdsocket = new SocketWrapper();
     this.cmdsocket.connect(ProtocolType.Pair1, `tcp://${this.option.host}:${this.option.port}`, 5000, 5000);
-    console.log(`Connected to CMD server at ${this.option.host}`);
     this.trapOnExit();
   }
 
@@ -77,7 +70,6 @@ export class Wcferry {
     this.msgsocket = new SocketWrapper();
     const msgsocket_url = `${this.option.host}:${+this.option.port + 1}`;
     this.msgsocket.connect(ProtocolType.Pair1, `tcp://${msgsocket_url}`, 0, 0);
-    console.log(`Connected to Msg server at ${msgsocket_url}`);
     this.msgsocket.recv((err: any, buf: Buffer) => {
       if (err) {
         console.log('error while receiving message: %O', err);
@@ -114,13 +106,6 @@ export class Wcferry {
       func: wcf.Functions.FUNC_DISABLE_RECV_TXT,
     });
     const res = this.sendCmdMessage(req);
-    const result = this.msgsocket?.close() || '{}';
-    const close_Result = JSON.parse(result);
-    if (close_Result.code == 0) {
-      console.log(`Msg Socket Close Success on: ${close_Result.url}`);
-    } else {
-      console.log(close_Result.message);
-    }
     return res.status;
   }
 

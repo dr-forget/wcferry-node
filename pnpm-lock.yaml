@@ -95,8 +95,11 @@ importers:
   packages/v1-core:
     dependencies:
       '@zippybee/nng':
-        specifier: ^1.1.10
-        version: 1.1.10
+        specifier: ^1.1.14
+        version: 1.1.14
+      debug:
+        specifier: ^4.3.7
+        version: 4.3.7
       google-protobuf:
         specifier: ^3.21.4
         version: 3.21.4
@@ -104,6 +107,9 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
     devDependencies:
+      '@types/debug':
+        specifier: ^4.1.12
+        version: 4.1.12
       '@types/mime':
         specifier: 3.0.0
         version: 3.0.0
@@ -297,6 +303,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@types/debug@4.1.12':
+    resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
+
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
 
@@ -318,14 +327,17 @@ packages:
   '@types/minimatch@5.1.2':
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
 
+  '@types/ms@0.7.34':
+    resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
+
   '@types/node@22.5.5':
     resolution: {integrity: sha512-Xjs4y5UPO/CLdzpgR6GirZJx36yScjh73+2NlLlkFRSoQN8B0DpfXPdZGnvVmLRLOsqDpOfTNv7D9trgGhmOIA==}
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
 
-  '@zippybee/nng@1.1.10':
-    resolution: {integrity: sha512-ztI6hLqtMOIdoMGFTc8uLmmUdHOUmA9loSzBqc9xZeq5vib5CRXGbW/1ysLTv+Sh5eAblFCVeYL+azLVSvozNg==}
+  '@zippybee/nng@1.1.14':
+    resolution: {integrity: sha512-639fLOexwboy4YEDi9IRI5pSGlTt/jN8VFtqJMWIcBJ9X1tO+M1WoSVn4epkfM2I/6QGWsjOL6AFkAtXzcWMFA==}
 
   '@zippybee/nng@1.1.9':
     resolution: {integrity: sha512-YGomxMOsOuOZi8uEvbYjBlVcGYgaCrwKfADZ5vUIZKvSgfSvmawX7S9jcVAvjO0v++raiAXvaMcbeqkAHfQ/0w==}
@@ -1104,6 +1116,10 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.22.4':
     optional: true
 
+  '@types/debug@4.1.12':
+    dependencies:
+      '@types/ms': 0.7.34
+
   '@types/estree@1.0.5': {}
 
   '@types/estree@1.0.6': {}
@@ -1123,13 +1139,15 @@ snapshots:
 
   '@types/minimatch@5.1.2': {}
 
+  '@types/ms@0.7.34': {}
+
   '@types/node@22.5.5':
     dependencies:
       undici-types: 6.19.8
 
   '@types/resolve@1.20.2': {}
 
-  '@zippybee/nng@1.1.10': {}
+  '@zippybee/nng@1.1.14': {}
 
   '@zippybee/nng@1.1.9': {}
 
