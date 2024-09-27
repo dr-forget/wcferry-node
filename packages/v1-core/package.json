@@ -18,7 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@zippybee/nng": "^1.1.14",
+    "@zippybee/nng": "^1.1.15",
     "debug": "^4.3.7",
     "google-protobuf": "^3.21.4",
     "mime": "^3.0.0"
