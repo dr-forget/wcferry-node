@@ -1,6 +1,6 @@
 {
   "name": "@zippybee/wechatcore-v1",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

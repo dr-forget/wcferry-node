@@ -8,7 +8,7 @@ import * as rd from './proto/roomdata';
 import * as eb from './proto/extrabyte';
 import koffi from 'koffi';
 import debug from 'debug';
-import lz4 from 'lz4';
+import lz4 from '@zippybee/lz4';
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
