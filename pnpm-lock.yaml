@@ -61,18 +61,6 @@ importers:
         specifier: ^12.1.0
         version: 12.1.0
 
-  packages/client:
-    dependencies:
-      '@zippybee/nng':
-        specifier: ^1.1.15
-        version: 1.1.15
-      debug:
-        specifier: ^4.3.7
-        version: 4.3.7
-      lz4:
-        specifier: ^0.6.5
-        version: 0.6.5
-
   packages/core:
     dependencies:
       '@zippybee/nng':
@@ -116,8 +104,17 @@ importers:
         specifier: ^0.8.7
         version: 0.8.7
 
+  packages/lz4:
+    dependencies:
+      cuint:
+        specifier: ^0.2.2
+        version: 0.2.2
+
   packages/v1-core:
     dependencies:
+      '@zippybee/lz4':
+        specifier: workspace:^
+        version: link:../lz4
       '@zippybee/nng':
         specifier: ^1.1.15
         version: 1.1.15
@@ -127,9 +124,6 @@ importers:
       google-protobuf:
         specifier: ^3.21.4
         version: 3.21.4
-      lz4:
-        specifier: ^0.6.5
-        version: 0.6.5
       mime:
         specifier: ^3.0.0
         version: 3.0.0
@@ -137,9 +131,6 @@ importers:
       '@types/debug':
         specifier: ^4.1.12
         version: 4.1.12
-      '@types/lz4':
-        specifier: ^0.6.4
-        version: 0.6.4
       '@types/mime':
         specifier: 3.0.0
         version: 3.0.0

@@ -1,0 +1,1 @@
+cmd_Release/xxhash.node := c++ -bundle -undefined dynamic_lookup -Wl,-search_paths_first -mmacosx-version-min=11.0 -arch arm64 -L./Release -stdlib=libc++  -o Release/xxhash.node Release/obj.target/xxhash/lib/binding/xxhash_binding.o Release/obj.target/xxhash/deps/lz4/lib/xxhash.o 
