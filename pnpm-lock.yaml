@@ -61,6 +61,18 @@ importers:
         specifier: ^12.1.0
         version: 12.1.0
 
+  packages/client:
+    dependencies:
+      '@zippybee/nng':
+        specifier: ^1.1.15
+        version: 1.1.15
+      debug:
+        specifier: ^4.3.7
+        version: 4.3.7
+      lz4:
+        specifier: ^0.6.5
+        version: 0.6.5
+
   packages/core:
     dependencies:
       '@zippybee/nng':
