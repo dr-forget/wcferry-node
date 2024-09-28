@@ -31,6 +31,9 @@ export interface WcferryOptions {
   wcf_path?: string;
   // debug模式
   debug?: boolean;
+
+  // sign
+  sigint?: boolean; //是否监听ctrl+c 事件
 }
 
 const logger = debug('wcferry:client');
@@ -51,6 +54,7 @@ export class Wcferry {
   private wechatInitSdk?: (debug: boolean, port: number) => number;
   private wechatDestroySdk?: () => number;
   private options: Required<WcferryOptions>;
+  private is_stop: boolean;
   constructor(options?: WcferryOptions) {
     this.options = {
       port: options?.port || 10086,
@@ -61,10 +65,11 @@ export class Wcferry {
       service: options?.service || false,
       wcf_path: options?.wcf_path || path.join(__dirname, '../wcf-sdk/sdk.dll'),
       debug: options?.debug || false,
+      sigint: options?.sigint || false,
     };
 
     ensureDirSync(this.options.cacheDir);
-
+    this.is_stop = false;
     this.msgEventSub.setMaxListeners(0);
     this.socket = new Socket(this.options.socketOptions);
 
@@ -83,6 +88,9 @@ export class Wcferry {
 
   private trapOnExit() {
     process.on('exit', () => this.stop());
+    if (this.options.sigint) {
+      process.on('SIGINT', () => process.exit());
+    }
   }
 
   get connected() {
@@ -131,7 +139,7 @@ export class Wcferry {
   private stopWcf() {
     const result = this.wechatDestroySdk?.();
     const res_num = result == 0 ? 0 : -1;
-    res_num !== 0 ? console.log(`资源释放失败:${res_num}`) : console.log('资源回收成功');
+    res_num !== 0 ? console.log(`WCF:资源释放失败:${res_num}`) : console.log('WCF:资源回收成功');
     return result;
   }
 
@@ -152,9 +160,11 @@ export class Wcferry {
 
   stop() {
     logger('Closing conneciton...');
-    this.disableMsgReceiving();
-    this.socket.close();
-    if (!this.options.service) {
+    if (!this?.is_stop) return;
+    this.is_stop = true;
+    this?.disableMsgReceiving?.();
+    this?.socket?.close();
+    if (!this?.options.service) {
       this.stopWcf();
     }
   }
@@ -162,8 +172,7 @@ export class Wcferry {
   private sendRequest(req: wcf.Request): wcf.Response {
     const data = req.serialize();
     const buf = this.socket.send(Buffer.from(data));
-    const res = wcf.Response.deserialize(buf);
-    return res;
+    return wcf.Response.deserialize(buf);
   }
 
   /** 是否已经登录 */
