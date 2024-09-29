@@ -1,4 +1,4 @@
-import { Socket, SocketOptions } from '@zippybee/nng';
+import { Socket, SocketOptions, lz4Compress } from '@zippybee/nng';
 import { wcf } from './proto/wcf';
 import { EventEmitter } from 'events';
 import { createTmpDir, ensureDirSync, sleep, uint8Array2str, type ToPlainType } from './utils';
@@ -7,7 +7,6 @@ import { Message } from './message';
 import * as rd from './proto/roomdata';
 import * as eb from './proto/extrabyte';
 import debug from 'debug';
-import lz4 from '@zippybee/lz4';
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
@@ -784,24 +783,13 @@ export class Wcferry {
 
   //  构造xml数据
   private struct_xml_data(xml: string, wx_id: string) {
-    const msgs = this.dbSqlQuery('MSG0.db', `select * from MSG where Type ='49' LIMIT 1`);
+    const msgs = this.dbSqlQuery('MSG0.db', `select * from MSG where Type = 49 ORDER BY CreateTime DESC LIMIT 1`);
     if (!msgs.length) return console.log('请先发送一条卡片消息 type:49');
-    const xml_info = this.lz4_compress(xml).toString('hex');
+    const xml_info = lz4Compress(Buffer.from(xml)).toString('hex');
     const MsgSvrID = `10${Date.now()}`;
     const sql = `UPDATE MSG SET MsgSvrID = ${MsgSvrID},CompressContent = x'${xml_info}', BytesExtra=x''  WHERE localId = ${msgs[0].localId}`;
     this.dbSqlQuery('MSG0.db', sql);
     return this.forwardMsg(MsgSvrID, wx_id);
-  }
-  // lz4 算法压缩
-  private lz4_compress(str: string): Buffer {
-    // 将输入字符串转换为 Buffer
-    const input = Buffer.from(str);
-    const output = Buffer.alloc(lz4.encodeBound(input.length));
-    const compressedSize = lz4.encodeBlock(input, output);
-    const resultBuffer = Buffer.alloc(compressedSize);
-    output.copy(resultBuffer, 0, 0, compressedSize); // 复制压缩后的数据
-
-    return resultBuffer; // 返回压缩后的 Buffer
   }
   /**
    * 发送xml数据

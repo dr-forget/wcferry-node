@@ -1,6 +1,6 @@
 {
   "name": "@zippybee/wechatcore",
-  "version": "2.1.12",
+  "version": "2.1.13",
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -21,8 +21,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@zippybee/lz4": "workspace:^",
-    "@zippybee/nng": "^1.1.15",
+    "@zippybee/nng": "^1.1.16",
     "debug": "^4.3.7",
     "google-protobuf": "^3.21.4",
     "koffi": "^2.9.0",
