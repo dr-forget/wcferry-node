@@ -1,4 +1,4 @@
-# WeChat Core SDK for Node.js ![npm version](https://img.shields.io/npm/v/@zippybee/wechatcore.svg)
+# WeChat Core SDK for Node.js
 
 ![npm version](https://img.shields.io/npm/v/@zippybee/wcf-cli.svg)
 
@@ -8,11 +8,15 @@
 
 ## 使用步骤
 
+### 安装依赖
+
 ```bash
 npm i @zippybee/wechatcore
 ```
 
 ### 示例代码
+
+详见examples/ding-dong-bot.js
 
 ```javascript
 const { Wcferry } = require('@zippybee/wechatcore');
@@ -30,7 +34,11 @@ const off = client.listening((msg) => {
 });
 ```
 
-#### Wcferry Option
+### 运行
+
+在PC上启动WeChat客户端并登录，运行`node ./examples/ding-dong-bot.js`
+
+## Wcferry Option
 
 | 参数名称                                                                      | 是否必填 | 默认值                                       | 类型     |
 | ----------------------------------------------------------------------------- | -------- | -------------------------------------------- | -------- |
@@ -40,7 +48,7 @@ const off = client.listening((msg) => {
 | service (启动模式为 service 模式，此模式仅做注入 dll 使用 其他业务需自行实现) | `false`  | false                                        | `bool`   |
 | wcf_path (指定 wcf 工作目录 一般用于 docker 挂载目录使用)                     | `false`  | `path.join(__dirname, '../wcf-sdk/sdk.dll')` | `string` |
 
-### 还提供 service 模式 （远程调用可用此模式 此模式 与 本地模式互斥）
+## service 模式 （远程调用可用此模式 此模式 与 本地模式互斥）
 
 注意 本模式下 只注入 dll 其他逻辑自行实现 可通过 tcp://0.0.0.0:10086
 
@@ -71,7 +79,7 @@ const off = client.on((msg) => {
 
 ```
 
-#### CLI 启动 service 模式
+## CLI 启动 service 模式
 
 ```
 npm i @zippybee/wcf-cli -g
@@ -81,7 +89,7 @@ zippy-wcf start -p 10086   //启动wcf服务    -p 运行端口   -d wcf dll 所
 zippy-wcf stop  //关闭wcf服务
 ```
 
-### 项目工程
+## 项目工程
 
 1. **构建 Protobuf 文件**：自动拉取最新的 `.proto` 文件并进行编译。
 
@@ -108,18 +116,6 @@ zippy-wcf stop  //关闭wcf服务
    ```bash
    npm run build
    ```
-
-### 免责声明
-
-本项目的代码仅供学习和研究用途。任何人不得将本项目或其代码用于违反法律或从事任何非法活动。
-
-使用本项目中的代码或衍生代码所造成的任何后果，开发者不承担任何责任。请在遵守适用法律的前提下使用本项目。
-
-## 致谢
-
-本项目借鉴了 并复制相关代码 特别感谢 [stkevintan](https://github.com/stkevintan) 的付出
-
-[node-wcferry]: https://github.com/wechatferry/wechatferry
 
 ## API 说明文档
 
@@ -544,3 +540,15 @@ export interface WcferryOptions {
 5. **资源清理**
 
    无论操作是否成功，都应确保在完成后调用 `stop()` 方法以释放资源并关闭连接。
+
+## 免责声明
+
+本项目的代码仅供学习和研究用途。任何人不得将本项目或其代码用于违反法律或从事任何非法活动。
+
+使用本项目中的代码或衍生代码所造成的任何后果，开发者不承担任何责任。请在遵守适用法律的前提下使用本项目。
+
+## 致谢
+
+本项目借鉴了 并复制相关代码 特别感谢 [stkevintan](https://github.com/stkevintan) 的付出
+
+[node-wcferry]: https://github.com/wechatferry/wechatferry
